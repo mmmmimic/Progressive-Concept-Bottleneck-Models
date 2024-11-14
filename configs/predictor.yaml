@@ -1,0 +1,28 @@
+# train a baseline regunet
+DATA:
+    DataSet: FetalTrim3 # "FetalTrim3" for ultrasound dataset trimester 3
+    Configs: 
+       csv_dir: /home/manli/progressive-concept-bottleneck-models/metas/trim3_sp.csv # folder containing the data or name of the csv file 
+       meta_dir: /data/proto/Zahra_Study1_Trials/trim3_sp.yaml # name of the meta file
+       split_index: split
+       keep_trim3: True
+       plane: ['Femur', 'Head', 'Abdomen', 'Cervix']
+       remove_calipers: True
+    ConceptNum: 27
+    CatIndex: [2, 3, 4, 8, 13, 17, 22, 24] # categorical concept indices
+    ClassNum: 8
+
+TRAINING:
+    Seed: 42
+    TrainSize: [224, 288]
+    EvalSize: [224, 288]
+    Epochs: 100
+    LearningRate: 0.1
+    WeightDecay: 0.001
+    BatchSize: 32
+    UseCUDA: True
+
+MODEL:
+    ExpandDim: 256 # if expand dim is 0, linear probe is activated
+    HeadNum: 0 # if head num is 0, concept interaction is deactivated
+

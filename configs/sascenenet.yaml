@@ -1,0 +1,44 @@
+# train a baseline cbm
+DATA:
+    DataSet: FetalTrim3 # "FetalTrim3" for ultrasound dataset trimester 3
+    Configs: 
+       csv_dir: metas/trim3_sp.csv # folder containing the data or name of the csv file 
+       meta_dir: /data/proto/Zahra_Study1_Trials/trim3_sp.yaml # name of the meta file
+       split_index: split1
+       keep_trim3: True
+       plane: ['Femur', 'Head', 'Abdomen', 'Cervix']
+    ClassNum: 8
+    ImageChannel: 1
+
+TRAINING:
+    Seed: 42 
+    TrainSize: [224, 288]
+    EvalSize: [224, 288]
+    Epochs: 50
+    LearningRate: 0.001 # *100 if SGD is activated
+    WeightDecay: 0.0001
+    BatchSize: 32
+    UseSGD: True # if not, AdamW is activated
+    Momentum: 0.9 # only valid when SGD is activated
+    Scheduler: ReduceOnPlateau
+    Loss: 
+       crossentropy: 1
+    LossConfigs:
+       crossentropy: {} 
+    UseCUDA: True
+    TrainAugmentations: {} # input as dictionary, e.g., "RandomRotate90":{}, "RandomScale": {}, "RandomCrop":{'width':224, 'height':224}, RandomBrightnessContrast:{}, RandomGamma:{}
+    EvalAugmentations: {}   
+    CheckRate: 100 # save a checkpoint every ____ epochs
+    MonitorMetric: 'avg_acc'
+    MonitorPattern: max
+
+MODEL:
+    ModelType: SASceneNet # ResNet18, ResNet50
+    SegModelPath: logs/nnn1/model.t7
+    SegConceptNum: 14
+
+METRICS:
+    TrainClassMetrics: ['acc', 'avg_acc']
+    TrainLossMetrics: ["loss"]    
+    EvalClassMetrics: ['acc', 'avg_acc']
+    EvalLossMetrics: ["loss"]

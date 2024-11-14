@@ -1,0 +1,43 @@
+# train a baseline regunet
+DATA:
+    DataSet: FetalTrim3 # "FetalTrim3" for ultrasound dataset trimester 3
+    Configs: 
+       csv_dir: /home/manli/progressive-concept-bottleneck-models/metas/trim3_sp.csv # folder containing the data or name of the csv file 
+       meta_dir: /data/proto/Zahra_Study1_Trials/trim3_sp.yaml # name of the meta file
+       split_index: split
+       keep_trim3: True
+       plane: ['Femur', 'Head', 'Abdomen', 'Cervix']
+    ClassNum: 14
+    ImageChannel: 1
+
+TRAINING:
+    Seed: 42
+    TrainSize: [224, 288]
+    EvalSize: [224, 288]
+    Epochs: 200
+    LearningRate: 0.01
+    WeightDecay: 0.000
+    BatchSize: 8
+    UseSGD: True # if not, AdamW is activated
+    Momentum: 0.9 # only valid when SGD is activated
+    Scheduler: Cosine # Cosine
+    Loss: 
+       dtu loss: 1
+    LossConfigs:
+       dtu loss: {} 
+    UseWeight: True
+    UseCUDA: True
+    TrainAugmentations: {HorizontalFlip:{'p':0.3},VerticalFlip:{'p':0.3}} # input as dictionary, e.g., "RandomRotate90":{}, "RandomScale": {}, "RandomCrop":{'width':224, 'height':224}, RandomBrightnessContrast:{}, RandomGamma:{}, #RandomScale:{},RandomCrop:{'width':288, 'height':224},RandomCrop:{'width':224, 'height':224},CLAHE:{},
+    EvalAugmentations: {}   
+    CheckRate: 50 # save a checkpoint every ____ epochs
+    MonitorMetric: 'fg_acc'
+
+MODEL:
+    Backbone: DTUNet # Unet, RegUnet, ResUnet 
+    Interpolation: True # if False, transposed convolution will be activated
+
+METRICS:
+    TrainClassMetrics: ['fg_acc']
+    TrainLossMetrics: ["loss"]    
+    EvalClassMetrics: ['fg_acc']
+    EvalLossMetrics: ["loss"]

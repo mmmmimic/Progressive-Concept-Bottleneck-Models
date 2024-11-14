@@ -1,0 +1,52 @@
+# train a baseline regunet
+DATA:
+    DataSet: FetalTrim3 # "FetalTrim3" for ultrasound dataset trimester 3
+    Configs: 
+       csv_dir: /home/manli/progressive-concept-bottleneck-models/metas/trim3_sp.csv # folder containing the data or name of the csv file 
+       meta_dir: /data/proto/Zahra_Study1_Trials/trim3_sp.yaml # name of the meta file
+       split_index: split1
+       keep_trim3: True
+       plane: ['Femur', 'Head', 'Abdomen', 'Cervix']
+       remove_calipers: False
+    SegChannel: 14
+    ImageChannel: 1
+    RegIndex: [0, 1, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 21, 23, 25, 26] # numerical concept indices
+    CatIndex: [2, 3, 4, 8, 13, 17, 22, 24] # categorical concept indices
+    GlobalIndex: [[2, 3, 4, 8, 13, 17, 22, 24]] # global concept indices
+    LocalIndex: [
+                [5,6,7,14,15,16,23,25,26], # local concept indices, group 1 (organ quality) 
+                [0,1,9,10,11,12,18,19,20,21] # local concept indices, group 2, (caliper quality)
+                ]
+    Relationship: {
+                    0: [14],
+                    1: [15],
+                    5: [6],
+                    6: [8],
+                    7: [9],
+                    9: [16,6],
+                    10: [16,6],
+                    11: [16,6],
+                    12: [16,6],
+                    14: [10],
+                    15: [12],
+                    16: [11],
+                    18: [18,13],
+                    19: [17,13],
+                    20: [20,13],
+                    21: [19,13],
+                    23: [4],
+                    25: [1,3],
+                    26: [1,2]
+                }
+
+TRAINING:
+    Seed: 42
+    TrainSize: [224, 288]
+    EvalSize: [224, 288]
+    Epochs: 50
+    LearningRate: 0.001
+    WeightDecay: 0.00005
+    BatchSize: 32
+    UseCUDA: True
+    TrainAugmentations: {} # input as dictionary, e.g., "RandomRotate90":{}, "RandomScale": {}, "RandomCrop":{'width':224, 'height':224}, RandomBrightnessContrast:{}, RandomGamma:{}, #RandomScale:{},RandomCrop:{'width':288, 'height':224},RandomCrop:{'width':224, 'height':224},CLAHE:{},
+    EvalAugmentations: {}   
