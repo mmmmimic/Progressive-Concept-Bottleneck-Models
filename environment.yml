@@ -1,4 +1,4 @@
-name: manxi_env
+name: pcbm_env
 channels:
   - anaconda
   - conda-forge
