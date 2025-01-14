@@ -3,7 +3,6 @@ CUB data
 '''
 import os
 import numpy as np
-from matplotlib import pyplot as plt
 import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
@@ -228,24 +227,3 @@ if __name__ == "__main__":
     print(concept, label, mask.min(), mask.max(), image.min(), image.max())
     print(pred_concept)
     print(torch.nn.L1Loss()(pred_concept, concept))
-    # for i in range(len(dataset)):
-    #     data = dataset[i]
-    #     image = data['image']
-    #     mask = data['mask']
-    #     concept = data['concept']
-    #     label = data['label']
-    #     print(concept)
-    #     print(label)
-    #     assert image.shape[0] == 3
-    #     assert image.shape[1] == 224
-    #     print(image.min(), image.max(), mask.min(), mask.max(), torch.unique(mask))
-    plt.figure()
-    plt.subplot(1,3,1)
-    plt.imshow(image.permute(1,2,0).numpy())
-    # plt.subplot(1,2,2)
-    # plt.imshow(mask.numpy())
-    plt.subplot(1,3,2)
-    plt.imshow(mask[...].numpy())
-    plt.subplot(1,3,3)
-    plt.imshow(mask[...].numpy())
-    plt.show()
