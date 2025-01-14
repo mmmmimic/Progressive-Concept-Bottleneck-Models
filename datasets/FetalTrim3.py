@@ -3,7 +3,6 @@ Fetal data, 3rd trim
 '''
 import os
 import numpy as np
-from matplotlib import pyplot as plt
 import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
@@ -260,29 +259,6 @@ class FetalSeg(FetalBase):
 
         concept[[0, 1, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 21, 23, 25, 26]] *= 10
 
-        # if self.split == 'train':
-        #     if plane >= 4:
-        #         real_plane = plane - 4
-        #     else:
-        #         real_plane = plane
-        #     concept_mask = torch.zeros_like(concept)
-        #     if real_plane == 0:
-        #         concept_mask[:4] = 1
-        #     elif real_plane == 1:
-        #         concept_mask[4:13] = 1
-        #     elif real_plane == 2:
-        #         concept_mask[13:22] = 1
-        #     elif real_plane == 3:
-        #         concept_mask[22:] = 1
-        #     else:
-        #         raise ValueError()
-        #     noise = torch.rand_like(concept)
-        #     noise = (noise - 0.5)*2 * 0.4
-        #     noise *= concept_mask
-        #     concept += noise
-        #     concept[[0, 1, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 21, 23, 25, 26]] = torch.clamp(concept[[0, 1, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 21, 23, 25, 26]], min=0, max=10)
-        #     concept[[2, 3, 4, 8, 13, 17, 22, 24]] = torch.clamp(concept[[2, 3, 4, 8, 13, 17, 22, 24]], min=0, max=1)
-
         data['concept'] = concept
 
         return data
@@ -294,17 +270,6 @@ class FetalSeg(FetalBase):
             plane = plane+4
         return plane
 
-        # # for segmentation use: 
-        # ana = eval(self._get_attr(index, 'anatomy'))
-        # if 'CavumSeptiPellucidi' in ana:
-        #     return 0
-        # elif 'UmbilicalVene' in ana:
-        #     return 1
-        # elif 'Bladder' in ana:
-        #     return 2
-        # else:
-        #     return 3
-
     def get_labels(self):
         label = np.array([self._get_label(l) for l in range(len(self.csv))])
         return label
@@ -312,8 +277,8 @@ class FetalSeg(FetalBase):
 if __name__ == "__main__":
     args = {     
         'split':'train', 
-            'csv_dir': '/home/manli/src/metas/trim3_sp.csv',
-            'meta_dir': '/data/proto/Zahra_Study1_Trials/trim3_sp.yaml', 
+            'csv_dir': 'metas/trim3_sp.csv',
+            'meta_dir': 'trim3_sp.yaml', 
             'split_index': 'split1',
             'plane': ['Head', 'Femur', 'Abdomen', 'Cervix'],
             'remove_calipers': True,
@@ -321,131 +286,3 @@ if __name__ == "__main__":
             }
     traindata = FetalConceptAug(**args)
     print(traindata[0]['concept'])
-
-    # tfs = A.Compose(
-    # [
-    #     A.Resize(224, 288),
-    #     A.HorizontalFlip(p=0.3),
-    #     A.VerticalFlip(p=0.3),
-    #     # A.Resize(720, 960),
-    #     A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.2, rotate_limit=30, p=1, border_mode=cv2.BORDER_CONSTANT, interpolation=cv2.INTER_LINEAR),
-    #     # A.RandomCrop(224, 288),
-    #     # A.RandomCrop(128, 128),
-    #     # A.Resize(224, 288),
-    #     # A.RandomCrop(224, 224),
-    #     # A.CLAHE(),
-    #     A.OneOf([
-    #         A.RandomGamma(gamma_limit=(60, 120), p=0.5),
-    #         A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
-    #         A.CLAHE(clip_limit=4.0, tile_grid_size=(4, 4), p=0.5),
-    #     ]),
-    #     A.ElasticTransform(alpha_affine=10, p=0.5, border_mode=cv2.BORDER_CONSTANT)
-    # ]
-    # )
-
-    # a = 'train'
-    # b = 'Head'
-    # args = {     
-    #     'transforms':tfs,
-    #     'split':f'{a}', 
-    #         'csv_dir': '/home/manli/src/metas/trim3_sp.csv',
-    #         'meta_dir': '/data/proto/Zahra_Study1_Trials/trim3_sp.yaml', 
-    #         'split_index': 'split',
-    #         'plane': [f'{b}'],
-    #         'remove_calipers': False,
-    #         'keep_trim3': False
-    #         }
-    # traindata = FetalSeg(**args)
-    
-    # for i in range(len(traindata)):
-
-    #     data = traindata[i]
-
-    #     image, gray_image, mask, label, symm, accep = data['image'], data['gray_image'], data['mask'], data['label'], data['symm'], data['acceptable']
-    #     raw_image, gray_raw_image = data['raw_image'], data['gray_raw_image']
-    #     traffic_concept = data['traffic_concept']
-    #     print(traffic_concept)
-
-    #     image = image / 2 + 0.5
-    #     gray_image = gray_image / 2 + 0.5
-
-    #     raw_image = raw_image / 2 + 0.5
-    #     gray_raw_image = gray_raw_image / 2 + 0.5
-
-    #     # plt.figure()
-    #     # plt.subplot(1,2,1)
-    #     # plt.imshow(raw_image.permute(1,2,0).cpu().numpy())
-    #     # plt.axis('off')
-    #     # plt.xlabel('Raw image')
-    #     # plt.subplot(1,2,2)
-    #     # plt.imshow(image.permute(1,2,0).cpu().numpy())
-    #     # plt.axis('off')
-    #     # plt.xlabel('Inpainted image')
-    #     # plt.tight_layout()
-    #     # plt.show()
-
-    #     plt.figure()
-    #     plt.subplot(1,3,1)
-    #     plt.imshow(image.permute(1,2,0).cpu().numpy())
-    #     plt.axis('off')
-    #     plt.subplot(1,3,2)
-    #     plt.imshow(gray_image.squeeze().cpu().numpy())
-    #     plt.axis('off')
-    #     plt.subplot(1,3,3)
-    #     plt.imshow(mask.numpy())
-    #     plt.axis('off')
-    #     plt.show()
-    #     # plt.subplot(2,3,4)
-    #     # plt.imshow(raw_image.permute(1,2,0).cpu().numpy())
-    #     # plt.axis('off')
-    #     # plt.subplot(2,3,5)
-    #     # plt.imshow(gray_raw_image.squeeze().cpu().numpy())
-    #     # plt.axis('off')
-    #     # plt.subplot(2,3,6)
-    #     # plt.imshow(mask.numpy())
-    #     # plt.axis('off')
-    #     # plt.subplot(3,3,7)
-    #     # plt.imshow(torch.mean(image, dim=0).squeeze().cpu().numpy())
-    #     # plt.axis('off')
-    #     # plt.subplot(3,3,8)
-    #     # plt.imshow((torch.mean(image, dim=0).squeeze() - gray_image.squeeze()).cpu().numpy())
-    #     # plt.axis('off')
-    #     # plt.show()
-
-    #     # mask = torch.nn.functional.one_hot(mask, num_classes=14)
-    #     # for i in range(14):
-    #     #     plt.figure()
-    #     #     plt.imshow(mask[...,i].numpy())
-    #     #     plt.axis('off')
-    #     #     plt.show()
-    #     #     plt.figure()
-    #     #     # plt.imshow(image * np.expand_dims(mask[...,i].numpy(), axis=-1))
-    #     #     plt.imshow(image * mask[...,i].numpy())
-    #     #     plt.axis('off')
-    #     #     plt.show()
-
-    #     print(image.shape, mask.shape, image.min(), image.max(), mask.min(), mask.max(), torch.unique(mask.flatten()))
-    #     print(label, symm, accep)
-
-    # # args = {     
-    # #     'split':'train', 
-    # #         'data_root': '/home/manli/3rd_trim_ultrasounds/',
-    # #         'csv_dir': 'trim3_cervix_clean.csv',
-    # #         'meta_dir': 'trim3_cervix.yaml' 
-    # #         }
-    # # traindata = FetalTrip(**args)
-    # # idx = 21 # 10
-    # # data = traindata[idx]
-
-    # # pos, anchor, neg1, neg2 = data['positive_sample'], data['anchor_sample'], data['negative_sample1'], data['negative_sample2']
-
-    # # plt.figure()
-    # # plt.subplot(1,4,1)
-    # # plt.imshow(pos[idx,...].numpy())
-    # # plt.subplot(1,4,2)
-    # # plt.imshow(anchor[idx,...].numpy())
-    # # plt.subplot(1,4,3)
-    # # plt.imshow(neg1[idx,...].numpy())
-    # # plt.subplot(1,4,4)
-    # # plt.imshow(neg2[idx,...].numpy())
-    # # plt.show()
