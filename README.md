@@ -3,7 +3,7 @@ This is the official implementation of our [preprint](https://arxiv.org/pdf/2211
 
 ## Environment
 ```
-conda create -f environment.yaml
+pip install -r requirements.txt
 ```
 
 ## Data Prepration
