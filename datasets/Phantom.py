@@ -3,7 +3,6 @@ Fetal data, 3rd trim
 '''
 import os
 import numpy as np
-from matplotlib import pyplot as plt
 import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
@@ -133,13 +132,5 @@ class PhantomPlane(Dataset):
         return self.labels
 
 if __name__ == "__main__":
-
     traindata = PhantomPlane('train')
     loader = DataLoader(traindata, batch_size=32, drop_last=False, shuffle=True)
-
-    plt.figure()
-    for image, label in tqdm(loader):
-        # print(image.shape)
-        print(label)
-        plt.imshow((image[10,...].squeeze().detach().cpu().numpy()+1)/2)
-        plt.show()
